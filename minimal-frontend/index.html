@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Minimal Frontend Test</title>
+  </head>
+  <body>
+    <h1>Call Backend</h1>
+    <br /><br />
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" placeholder="Enter your email" />
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" placeholder="Enter your password" />
+
+    <button onclick="callSignup()">Sign up</button>
+
+    <script>
+      const BASE_URL = "https://backend-project-s8m9.onrender.com"; 
+
+      function callSignup() {
+        // 1) Make sure these IDs exist in HTML
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+
+        // 2) If either is missing, show a clear error
+        if (!emailInput || !passwordInput) {
+          console.error("Missing #email or #password element in HTML");
+          return;
+        }
+
+        // 3) Extract values
+        const email = emailInput.value;
+        const password = passwordInput.value;
+
+        // 4) Send request to your backend
+        fetch(`${BASE_URL}/api/auth/signup`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email, password })
+        })
+          .then(res => {
+            // If response not OK, convert to text
+            if (!res.ok) {
+              return res.text().then(text => {
+                try {
+                  const data = JSON.parse(text);
+                  throw new Error(data.message || `HTTP ${res.status}`);
+                } catch {
+                  throw new Error(text || `HTTP ${res.status}`);
+                }
+              });
+            }
+            // If OK, parse as JSON
+            return res.json();
+          })
+          .then(data => {
+            // Success
+            console.log("Signup successful:", data);
+            alert("Signup successful!\n" + JSON.stringify(data, null, 2));
+          })
+          .catch(err => {
+            // Error
+            console.error("Signup error:", err);
+            alert(`Signup error: ${err.message}`);
+          });
+      }
+    </script>
+  </body>
+</html>

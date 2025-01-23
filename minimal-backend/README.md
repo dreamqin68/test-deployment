@@ -1,16 +1,16 @@
 # Minimal Backend
 
-This is a minimal backend project built with [Node.js](https://nodejs.org/), [Express](https://expressjs.com/), and [CORS](https://www.npmjs.com/package/cors). It is primarily designed to test and handle requests from a [frontend](https://dreamqin68.github.io/). This backend includes a basic signup endpoint for demonstration purposes.
+This is a minimal backend project built with [Node.js](https://nodejs.org/), [Express](https://expressjs.com/), and [CORS](https://www.npmjs.com/package/cors). It is primarily designed to test and handle requests from a remote [frontend](https://dreamqin68.github.io/). This backend includes a basic signup endpoint for demonstration purposes.
 
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
+- [Project Structure](#project-structure)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Features](#features)
 - [Available Endpoints](#available-endpoints)
   - [POST `/api/auth/signup`](#post-apiauthsignup)
-- [Project Structure](#project-structure)
 
 ## Prerequisites
 
@@ -18,6 +18,22 @@ Make sure you have the following installed on your machine:
 
 - [Node.js](https://nodejs.org/) (version 14 or above recommended)
 - [npm](https://www.npmjs.com/) (comes with Node.js)
+
+## Project Structure
+
+```bash
+minimal-backend/
+│
+├── index.js
+├── package-lock.json
+├── package.json
+└── README.md
+```
+
+- **index.js**: Main server file (Express.js setup, CORS configuration, routes).
+- **package-lock.json**: Auto-generated file that locks dependency versions.
+- **package.json**: Project metadata, scripts, and dependencies.
+- **README.md**: Project documentation (this file).
 
 ## Installation
 
@@ -79,19 +95,3 @@ Currently, this endpoint simply logs the request body to the console:
 ```bash
 console.log("Signup request body:", req.body);
 ```
-
-## Project Structure
-
-```bash
-minimal-backend/
-│
-├── index.js
-├── package-lock.json
-├── package.json
-└── README.md
-```
-
-- **index.js**: Main server file (Express.js setup, CORS configuration, routes).
-- **package-lock.json**: Auto-generated file that locks dependency versions.
-- **package.json**: Project metadata and scripts.
-- **README.md**: Project documentation (this file).

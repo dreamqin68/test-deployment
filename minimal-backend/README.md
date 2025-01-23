@@ -1,6 +1,6 @@
 # Minimal Backend
 
-This is a minimal backend project built with [Node.js](https://nodejs.org/), [Express](https://expressjs.com/), and [CORS](https://www.npmjs.com/package/cors). It is primarily designed to test and handle requests from a remote [frontend](https://dreamqin68.github.io/). This backend includes a basic signup endpoint for demonstration purposes.
+This is a minimal backend project built with [Node.js](https://nodejs.org/), [Express](https://expressjs.com/), and [CORS](https://www.npmjs.com/package/cors). It is primarily designed to test and handle requests from a remote [frontend](https://dreamqin68.github.io/frontend-project/). This backend includes a basic signup endpoint for demonstration purposes.
 
 ## Table of Contents
 

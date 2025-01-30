@@ -1,52 +1,52 @@
-// For local testing, point to remote backend
+import axios from "axios";
+
+// Backend URL
 const SERVER_URL = "https://quality-visually-stinkbug.ngrok-free.app";
 
-window.callSignup = function callSignup() {
-  // 1) Make sure these IDs exist in HTML
+async function callSignup() {
+  // 1) Get input elements
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
 
-  // 2) If either is missing, show a clear error
+  // 2) Check if elements exist
   if (!emailInput || !passwordInput) {
     console.error("Missing #email or #password element in HTML");
+    alert("Error: Email or password field is missing.");
     return;
   }
 
   // 3) Extract values
-  const email = emailInput.value;
-  const password = passwordInput.value;
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
 
-  // 4) Send request to the backend
-  fetch(`${SERVER_URL}/api/auth/signup`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
-  })
-    .then((res) => {
-      // If response not OK, convert to text
-      if (!res.ok) {
-        return res.text().then((text) => {
-          try {
-            const data = JSON.parse(text);
-            throw new Error(data.message || `HTTP ${res.status}`);
-          } catch {
-            throw new Error(text || `HTTP ${res.status}`);
-          }
-        });
-      }
-      // If OK, parse as JSON
-      return res.json();
-    })
-    .then((data) => {
-      // Success
-      console.log("Signup successful:", data);
-      alert("Signup successful!\n" + JSON.stringify(data, null, 2));
-    })
-    .catch((err) => {
-      // Error
-      console.error("Signup error:", err);
-      alert(`Signup error: ${err.message}`);
-    });
-};
+  // 4) Validate inputs
+  if (!email || !password) {
+    alert("Please enter both email and password.");
+    return;
+  }
+
+  try {
+    // 5) Show loading message
+    alert("Signing up... Please wait.");
+
+    // 6) Send request using Axios
+    const response = await axios.post(
+      `${SERVER_URL}/api/auth/signup`,
+      { email, password },
+      { headers: { "Content-Type": "application/json" } }
+    );
+
+    // 7) Success response
+    console.log("Signup successful:", response.data);
+    alert("Signup successful!\n" + JSON.stringify(response.data, null, 2));
+  } catch (error) {
+    // 8) Handle errors
+    console.error("Signup error:", error);
+    const message =
+      error.response?.data?.message || error.message || "Unknown error";
+    alert(`Signup error: ${message}`);
+  }
+}
+
+// Attach function globally (for debugging in console)
+window.callSignup = callSignup;

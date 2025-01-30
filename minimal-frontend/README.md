@@ -1,6 +1,6 @@
 # Minimal Frontend
 
-A minimal frontend project used for testing a remote backend endpoint. This setup uses [Vite](https://vitejs.dev/) for local development and includes a simple HTML page (`index.html`) and a JavaScript file (`main.js`) to call the backend signup endpoint.
+A minimal frontend project used for testing a remote backend endpoint. This setup uses [Vite](https://vitejs.dev/) for local development and includes a simple HTML page (`index.html`) and a JavaScript file (`main.js`) to call the backend signup endpoint using **Axios** for API requests.
 
 ## Table of Contents
 

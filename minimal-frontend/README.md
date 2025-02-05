@@ -15,7 +15,7 @@ A minimal frontend project used for testing a [remote backend endpoint](https://
 
 Make sure you have the following installed on your machine:
 
-- [Node.js](https://nodejs.org/) (version 14 or above recommended)
+- [Node.js](https://nodejs.org/) (LTS version recommended)
 - [npm](https://www.npmjs.com/) (comes with Node.js)
 
 ## Project Structure

@@ -16,7 +16,7 @@ This is a minimal backend project built with [Node.js](https://nodejs.org/), [Ex
 
 Make sure you have the following installed on your machine:
 
-- [Node.js](https://nodejs.org/) (version 14 or above recommended)
+- [Node.js](https://nodejs.org/) (LTS version recommended)
 - [npm](https://www.npmjs.com/) (comes with Node.js)
 
 ## Project Structure

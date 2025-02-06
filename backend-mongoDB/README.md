@@ -10,6 +10,7 @@ This is a minimal backend project built with [Node.js](https://nodejs.org/), [Ex
 - [Usage](#usage)
 - [Features](#features)
 - [Environment Variables](#environment-variables)
+- [Using Mongoose](#using-mongoose)
 - [Available Endpoints](#available-endpoints)
   - [POST `/api/auth/signup`](#post-apiauthsignup)
 
@@ -21,7 +22,7 @@ Make sure you have the following installed on your machine:
 
 - [Node.js](https://nodejs.org/) (LTS version recommended)
 - [npm](https://www.npmjs.com/) (comes with Node.js)
-- [MongoDB](https://www.mongodb.com/) (Locally installed or use **MongoDB Atlas** for cloud hosting)
+- [MongoDB](https://www.mongodb.com/) (Locally installed (**MongoDB Community Edition**) or use **MongoDB Atlas** for cloud hosting)
 
 ---
 
@@ -31,7 +32,7 @@ Make sure you have the following installed on your machine:
 backend-mongodb/
 │
 ├── .env                # Environment variables
-├── index.js            # Main server file (Express.js setup, MongoDB connection, API routes)
+├── index.js            # Main server file
 ├── package-lock.json   # Auto-generated file that locks dependency versions
 ├── package.json        # Project metadata, scripts, and dependencies
 └── README.md           # Project documentation (this file)
@@ -74,3 +75,95 @@ backend-mongodb/
 ## Environment Variables
 
 This projectincludes a `.env` file, which contains the necessary environment variables:
+
+| Variable       | Description                                                  |
+| -------------- | ------------------------------------------------------------ |
+| `ORIGIN`       | Allowed frontend domain (e.g., https://dreamqin68.github.io) |
+| `DATABASE_URL` | MongoDB connection string (replace with actual credentials)  |
+| `PORT`         | The port number on which the server runs (8747)              |
+
+## Using Mongoose
+
+This project uses **Mongoose** to interact with MongoDB.
+
+### Defining a Mongoose Schema
+
+A Schema in Mongoose defines the structure of a document inside a MongoDB collection.
+
+```bash
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+});
+```
+
+### Creating a Model
+
+A Model in Mongoose represents a collection in MongoDB and provides methods to interact with the database.
+
+```bash
+const User = mongoose.model("User", userSchema);
+```
+
+The `User` model allows us to create, read, update, and delete (CRUD) users from the users collection in MongoDB.
+
+### Using the Model in API Requests
+
+The `User` model is used in the signup API to:
+
+- **Check if a user exists** before registering.
+- **Create and save a new user** in MongoDB.
+
+```bash
+// Check if the user already exists in the database
+const existingUser = await User.findOne({ email });
+if (existingUser) {
+   return res.status(400).json({ message: "Email already registered" });
+}
+
+// Create a new user document
+const newUser = new User({ email, password });
+const savedUser = await newUser.save(); // Save the user to MongoDB
+```
+
+### Connecting to MongoDB
+
+Mongoose connects to MongoDB using the `.connect()` method:
+
+```bash
+mongoose
+  .connect(process.env.DATABASE_URL)
+  .then(() => console.log("MongoDB connected successfully"))
+  .catch((err) => console.error("MongoDB connection error:", err));
+```
+
+## Available Endpoints
+
+### POST `/api/auth/signup`
+
+Use this endpoint to send signup data to the server.
+
+#### Request Body
+
+```bash
+{
+  "email": "test@example.com",
+  "password": "securepassword"
+}
+```
+
+#### Response
+
+| Status                      | Response                                        |
+| --------------------------- | ----------------------------------------------- |
+| `201 Created`               | `{ "message": "User registered successfully" }` |
+| `400 Bad Request`           | `{ "message": "Email already registered" }`     |
+| `500 Internal Server Error` | `{ "message": "Internal Server Error" }`        |
+
+#### Example
+
+```bash
+curl -X POST -H "Content-Type: application/json" \
+-d '{"email":"test@example.com","password":"mypassword"}' \
+http://localhost:8747/api/auth/signup
+```

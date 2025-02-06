@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 dotenv.config(); // Load environment variables from .env file
 
 const app = express(); // Create an Express application
-const PORT = process.env.PORT || 8747; // Define the port number (from environment variables or default 8747)
+const PORT = process.env.PORT; // Define the port number (from environment variables or default 8747)
 const DATABASE_URL = process.env.DATABASE_URL; // Load MongoDB connection string from environment variables
 
 // Middleware to enable CORS (Cross-Origin Resource Sharing)

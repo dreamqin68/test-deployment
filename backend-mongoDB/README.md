@@ -74,7 +74,7 @@ backend-mongodb/
 
 ## Environment Variables
 
-This projectincludes a `.env` file, which contains the necessary environment variables:
+This project includes a `.env` file, which contains the necessary environment variables:
 
 | Variable       | Description                                                  |
 | -------------- | ------------------------------------------------------------ |

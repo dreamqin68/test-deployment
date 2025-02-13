@@ -13,6 +13,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleSignup = async () => {
     try {
@@ -25,10 +26,10 @@ const Auth = () => {
         { withCredentials: true }
       );
       if (response.status === 201) {
-        // setUserInfo(response.data.user);
-        // navigate("/profile");
+        setMessage("Signup successful!");
       }
     } catch (error) {
+      setMessage("Signup failed. Please try again.");
       console.log(error);
     }
   };
@@ -68,6 +69,9 @@ const Auth = () => {
               <Button className="rounded-full p-6" onClick={handleSignup}>
                 Signup
               </Button>
+              {message && (
+                <p className="text-center mt-4 font-semibold">{message}</p>
+              )}
             </div>
           </div>
         </div>

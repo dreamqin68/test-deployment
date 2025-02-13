@@ -3,6 +3,7 @@ import Auth from "./pages/auth";
 
 const App = () => {
   return (
+    // Wraps the application in a BrowserRouter, enabling client-side routing
     <BrowserRouter>
       <Routes>
         <Route path="/auth" element={<Auth />} />

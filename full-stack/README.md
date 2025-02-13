@@ -117,6 +117,8 @@ Below is a quick summary of how the React frontend was set up using Vite. For fu
 
    - **Add Tailwind (version 3)**
 
+     **Tailwind CSS** is a utility-first CSS framework that offers low-level utility classes, enabling you to quickly build custom designs without writing extensive custom CSS.
+
      Install `tailwindcss` and its peer dependencies, then generate `tailwind.config.js` and `postcss.config.js` files
 
      ```bash
@@ -317,14 +319,20 @@ This setup shows how the React frontend sends signup data (`email` and `password
 
 **Backend**:
 
-Define the endpoint in `server/index.js`. The Express server listens for `POST` requests at `/api/auth/signup`. Here, you’d typically:
+Define the endpoint in `server/index.js`. The Express server listens for `POST` requests at `/api/auth/signup`. In this endpoint, the server:
 
-- Parse the request body.
-- Validate the user data (e.g., check if `email` or `password` is missing).
-- Save the user to the database (MongoDB) and respond with either success or an error
+- Parses the request body (`email`, `password`).
+- Validates the user data (e.g., checks if the `email` is already registered).
+- Saves the user information in MongoDB.
+- Responds with either success or an appropriate error message.
 
 ```bash
 const app = express();
 
-app.post("/api/auth/signup", async (req, res) => {...});
+const signup = async (req, res) => {...};
+
+const authRoutes = Router();
+app.use("/api/auth", authRoutes);
+
+authRoutes.post("/signup", signup);
 ```

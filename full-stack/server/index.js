@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
@@ -20,12 +20,6 @@ app.use(
 // Middleware to parse incoming JSON requests
 app.use(express.json());
 
-// Connect to MongoDB using Mongoose
-mongoose
-  .connect(DATABASE_URL) // Connect to the database using the URL from environment variables
-  .then(() => console.log("MongoDB connected successfully")) // Log success message
-  .catch((err) => console.error("MongoDB connection error:", err)); // Log error if connection fails
-
 // Define a user schema for MongoDB
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true }, // Email is required and must be unique
@@ -35,8 +29,7 @@ const userSchema = new mongoose.Schema({
 // Create a Mongoose model for the "users" collection
 const User = mongoose.model("User", userSchema);
 
-// API endpoint for user signup
-app.post("/api/auth/signup", async (req, res) => {
+const signup = async (req, res) => {
   try {
     console.log("Received signup request:", req.body); // Log incoming request body
 
@@ -66,7 +59,20 @@ app.post("/api/auth/signup", async (req, res) => {
     console.error("Signup error:", error);
     res.status(500).json({ message: "Internal Server Error" }); // Send error response
   }
-});
+};
+
+// Define the router and endpoint
+const authRoutes = Router();
+app.use("/api/auth", authRoutes);
+
+// POST /api/auth/signup
+authRoutes.post("/signup", signup);
+
+// Connect to MongoDB using Mongoose
+mongoose
+  .connect(DATABASE_URL) // Connect to the database using the URL from environment variables
+  .then(() => console.log("MongoDB connected successfully")) // Log success message
+  .catch((err) => console.error("MongoDB connection error:", err)); // Log error if connection fails
 
 // Start the Express server and listen on the specified port
 app.listen(PORT, () => {

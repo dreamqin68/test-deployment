@@ -5,11 +5,13 @@ import { useState } from "react";
 import axios from "axios";
 import { HOST, SIGNUP_ROUTE } from "@/lib/constants";
 
+// Creates an axios instance with a server URL
 const apiClient = axios.create({
   baseURL: HOST,
 });
 
 const Auth = () => {
+  // State variables for capturing user input and feedback messages
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -17,6 +19,7 @@ const Auth = () => {
 
   const handleSignup = async () => {
     try {
+      // Sends the email and password to the signup route
       const response = await apiClient.post(
         SIGNUP_ROUTE,
         {
@@ -25,6 +28,8 @@ const Auth = () => {
         },
         { withCredentials: true }
       );
+
+      // If the server responds with status 201, update the message state to show success
       if (response.status === 201) {
         setMessage("Signup successful!");
       }

@@ -29,21 +29,18 @@ window.connectSocket = function () {
     // Convert numeric timestamp to a readable string
     const timeString = new Date(data.time).toLocaleString();
 
-    if (data.sender === myRole) {
-      // If the message is from me
-      messageBox.innerHTML += `
-        <div style="text-align:right;">
-          <strong>${myRole} [${timeString}]:</strong> ${data.text}
+    // If the message is from the local user (myRole), right-align; else left-align
+    const alignment = data.sender === myRole ? "right" : "left";
+    const senderLabel = data.sender === myRole ? myRole : data.sender;
+
+    messageBox.innerHTML += `
+      <div style="text-align:${alignment}; margin-bottom:8px;">
+        <strong>${senderLabel}:</strong> ${data.text}
+        <div style="font-size: 0.8em; margin-top: 3px;">
+          ${timeString}
         </div>
-      `;
-    } else {
-      // If the message is from the other user
-      messageBox.innerHTML += `
-        <div style="text-align:left;">
-          <strong>${data.sender} [${timeString}]:</strong> ${data.text}
-        </div>
-      `;
-    }
+      </div>
+    `;
   });
 };
 
@@ -61,7 +58,7 @@ window.sendMsg = async function () {
     // Post to /api/messages with "sender" = myRole
     const response = await axios.post(`${SERVER_URL}/api/messages`, {
       sender: myRole,
-      text: text,
+      text,
     });
     if (response.data.success) {
       console.log("Message posted:", response.data.message);

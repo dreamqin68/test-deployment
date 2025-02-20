@@ -64,6 +64,8 @@ backend-mongodb/
 
 2. The server will run at http://localhost:8747.
 
+3. Open the browser and go to the [remote frontend](https://dreamqin68.github.io/frontend-project/) to verify that the backend is working correctly.
+
 ## Features
 
 - **Express** for creating the backend server.

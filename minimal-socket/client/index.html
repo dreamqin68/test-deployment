@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Single Message Box (Choose Me or Friend)</title>
+</head>
+<body>
+  <h1>Simple Chat</h1>
+
+  <!-- Let the user select "me" or "friend" -->
+  <div>
+    <label for="userSelect">Choose your role:</label>
+    <select id="userSelect">
+      <option value="me">Me</option>
+      <option value="friend">Friend</option>
+    </select>
+    <button onclick="connectSocket()">Connect</button>
+  </div>
+
+  <!-- The message box (only one) -->
+  <div
+    id="messageBox"
+    style="border:1px solid #ccc; width:600px; height:300px; overflow:auto; padding:10px; margin-top:20px;"
+  >
+    <h3>Messages</h3>
+  </div>
+
+  <!-- Input field to send new messages -->
+  <div style="margin-top:20px;">
+    <input id="msgInput" type="text" placeholder="Type your message..." />
+    <button onclick="sendMsg()">Send</button>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

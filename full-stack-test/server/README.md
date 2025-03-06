@@ -19,7 +19,7 @@ In this project, we use:
 
 - **[Jest](https://jestjs.io/docs/getting-started)** as the test runner,
 - **Supertest** to simulate HTTP requests against our Express server,
-- **@shelf/jest-mongodb** to spin up an in-memory MongoDB, avoiding real database interactions.
+- **[@shelf/jest-mongodb](https://jestjs.io/docs/mongodb)** to spin up an in-memory MongoDB, avoiding real database interactions.
 
 The test ensures that:
 

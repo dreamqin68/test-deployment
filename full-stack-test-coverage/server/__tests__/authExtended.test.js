@@ -1,5 +1,3 @@
-// __tests__/authExtended.test.js
-
 import request from "supertest";
 import { app, connectDB, User } from "../app.js";
 import mongoose from "mongoose";

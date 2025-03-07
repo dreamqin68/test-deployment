@@ -11,6 +11,10 @@ A collection of minimal projects designed to test various frontend and backend s
   - [minimal-backend](#minimal-backend)
   - [backend-mongoDB](#backend-mongoDB)
   - [full-stack](#full-stack)
+  - [minimal-socket](#minimal-socket)
+  - [full-stack-test](#full-stack-test)
+  - [full-stack-test-coverage](#full-stack-test-coverage)
+  - [minimal-JWT](#minimal-jwt)
 - [Getting Started](#getting-started)
 
 ## Overview
@@ -24,7 +28,11 @@ test-deployment/
 ├── minimal-frontend
 ├── minimal-backend
 ├── backend-mongoDB
-└── full-stack
+├── full-stack
+├── minimal-socket
+├── full-stack-test
+├── full-stack-test-coverage
+└── minimal-JWT
 ```
 
 - **minimal-frontend** – A minimal React/Vite-based frontend used to test remote backend endpoints.
@@ -81,9 +89,30 @@ test-deployment/
   - Separate client and server directories.
 - **Usage**:
   - Install dependencies in both the `client` and `server` folders.
-  - Run the backend (`npm run dev` in the `server` folder).
-  - Run the frontend (`npm run dev` in the `client` folder).
+  - Start the backend (`npm run dev` in the `server` folder).
+  - Start the frontend (`npm run dev` in the `client` folder).
   - Access the React app in the browser to test signup functionality.
+
+### minimal-socket
+
+- **Purpose**: A minimal **Socket.io** chat application demonstrating real-time bidirectional communication.
+- **Tech Stack**: Node.js, Express, Socket.io, Socket.io-client, Axios.
+- **Key Features**:
+  - Allows users to choose a role (`Me` or `Friend`) and chat in real time.
+  - Uses **Socket.io** for instant message transmission between connected users.
+  - Stores active connections and routes messages to the correct recipient.
+  - Provides an Express-based backend with a simple API for message handling.
+- **Usage**:
+  - Install dependencies in both the `client` and `server` folders.
+  - Start the backend (`npm run dev` in the `server` folder).
+  - Start the frontend (`npm run dev` in the `client` folder).
+  - Open the frontend URL in the browser
+
+### full-stack-test
+
+### full-stack-test-coverage
+
+### minimal-JWT
 
 ## Getting Started
 

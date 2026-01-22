@@ -6,7 +6,7 @@ const PORT = 8747;
 
 app.use(
   cors({
-    origin: "https://dreamqin68.github.io",
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
@@ -16,8 +16,13 @@ app.use(express.json());
 // New signup endpoint
 app.post("/api/auth/signup", (req, res) => {
   // Extract user details from req.body
-  const { username, password } = req.body;
+  const { email, password } = req.body;
   console.log("Signup request body:", req.body);
+
+  res.status(201).json({
+    message: "signup successful",
+    user: { email: email }
+  });
 });
 
 app.listen(PORT, () => {

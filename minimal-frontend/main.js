@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Backend URL
-const SERVER_URL = "https://quality-visually-stinkbug.ngrok-free.app";
+const SERVER_URL = "https://pretorial-portliest-vertie.ngrok-free.dev";
 
 async function callSignup() {
   // 1) Get input elements

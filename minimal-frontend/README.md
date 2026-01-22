@@ -1,6 +1,6 @@
 # Minimal Frontend
 
-A minimal frontend project used for testing a [remote backend endpoint](https://quality-visually-stinkbug.ngrok-free.app). This setup uses [Vite](https://vitejs.dev/) for local development and includes a simple HTML page (`index.html`) and a JavaScript file (`main.js`) to call the backend signup endpoint using **Axios** for API requests.
+A minimal frontend project used for testing a [remote backend endpoint](https://pretorial-portliest-vertie.ngrok-free.dev). This setup uses [Vite](https://vitejs.dev/) for local development and includes a simple HTML page (`index.html`) and a JavaScript file (`main.js`) to call the backend signup endpoint using **Axios** for API requests.
 
 ## Table of Contents
 
@@ -63,7 +63,7 @@ minimal-frontend/
 - By default, `main.js` points to:
 
   ```bash
-  const SERVER_URL = "https://quality-visually-stinkbug.ngrok-free.app";
+  const SERVER_URL = "https://pretorial-portliest-vertie.ngrok-free.dev";
   ```
 
 - The **CORS** configuration for the remote backend allow requests from the `port (5173)` where this frontend is served.

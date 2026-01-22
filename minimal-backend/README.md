@@ -1,13 +1,13 @@
 # Minimal Backend
 
-This is a minimal backend project built with [Node.js](https://nodejs.org/), [Express](https://expressjs.com/), and [CORS](https://www.npmjs.com/package/cors). It is primarily designed to test and handle requests from a remote [frontend](https://dreamqin68.github.io/frontend-project/). This backend includes a basic signup endpoint for demonstration purposes.
+This is a minimal backend project built with [Node.js](https://nodejs.org/), [Express](https://expressjs.com/), and [CORS](https://www.npmjs.com/package/cors). It is primarily designed to test and handle requests from a [frontend](https://github.com/dreamqin68/frontend-project). This backend includes a basic signup endpoint for demonstration purposes.
 
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
 - [Project Structure](#project-structure)
-- [Installation](#installation)
-- [Usage](#usage)
+- [Backend Setup](#backend-setup)
+- [Frontend Setup](#frontend-setup)
 - [Features](#features)
 - [Available Endpoints](#available-endpoints)
   - [POST `/api/auth/signup`](#post-apiauthsignup)
@@ -35,7 +35,7 @@ minimal-backend/
 - **package.json**: Project metadata, scripts, and dependencies.
 - **README.md**: Project documentation (this file).
 
-## Installation
+## Backend Setup
 
 1. **Clone** the repository or download the source code.
 2. **Navigate** to the project directory in your terminal.
@@ -45,23 +45,40 @@ minimal-backend/
    npm install
    ```
 
-## Usage
-
-1. Start the server:
+4. Start the server:
 
    ```bash
    npm run dev
    ```
-
    or simply:
 
    ```bash
    node index.js
    ```
 
-2. By default, the server will run at http://localhost:8747.
+5. The server will run at http://localhost:8747.
 
-3. Open the browser and go to the [remote frontend](https://dreamqin68.github.io/frontend-project/) to verify that the backend is working correctly.
+## Frontend Setup
+
+1. Download the repo: Go to https://github.com/dreamqin68/frontend-project and clone or download the repository
+
+2. Navigate to the downloaded folder
+
+   ```bash
+   cd frontend-project
+   ```
+
+3. Start the Frontend: Run the following command to start a local static server:
+
+   ```bash
+   npm start
+   ```
+   or 
+
+    ```bash
+    npx serve -s . -l 3000
+    ```
+4. Open your browser and navigate to http://localhost:3000
 
 ## Features
 
@@ -79,7 +96,7 @@ Use this endpoint to send signup data to the server.
 
 ```bash
 {
-  "username": "string",
+  "email": "string",
   "password": "string"
 }
 ```
@@ -88,7 +105,7 @@ Use this endpoint to send signup data to the server.
 
 ```bash
 curl -X POST -H "Content-Type: application/json" \
--d '{"username":"testuser","password":"testpass"}' \
+-d '{"email":"testuser","password":"testpass"}' \
 http://localhost:8747/api/auth/signup
 ```
 

@@ -1,13 +1,13 @@
 # Minimal Backend with MongoDB
 
-This is a minimal backend project built with [Node.js](https://nodejs.org/), [Express](https://expressjs.com/), [MongoDB](https://www.mongodb.com/), and [CORS](https://www.npmjs.com/package/cors). It is designed to handle user authentication requests from a remote [frontend](https://dreamqin68.github.io/frontend-project/). The backend includes a **user signup API** that stores user data in **MongoDB**.
+This is a minimal backend project built with [Node.js](https://nodejs.org/), [Express](https://expressjs.com/), [MongoDB](https://www.mongodb.com/), and [CORS](https://www.npmjs.com/package/cors). It is designed to handle user authentication requests from a [frontend](https://github.com/dreamqin68/frontend-project). The backend includes a **user signup API** that stores user data in **MongoDB**.
 
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
 - [Project Structure](#project-structure)
-- [Installation](#installation)
-- [Usage](#usage)
+- [Backend Setup](#backend-setup)
+- [Frontend Setup](#frontend-setup)
 - [Features](#features)
 - [Environment Variables](#environment-variables)
 - [Using Mongoose](#using-mongoose)
@@ -38,7 +38,7 @@ backend-mongodb/
 └── README.md           # Project documentation (this file)
 ```
 
-## Installation
+## Backend Setup
 
 1. **Clone** the repository or download the source code.
 2. **Navigate** to the project directory in your terminal.
@@ -48,9 +48,7 @@ backend-mongodb/
    npm install
    ```
 
-## Usage
-
-1. Start the server:
+4. Start the server:
 
    ```bash
    npm run dev
@@ -62,9 +60,31 @@ backend-mongodb/
    node index.js
    ```
 
-2. The server will run at http://localhost:8747.
+5. The server will run at http://localhost:8747.
 
-3. Open the browser and go to the [remote frontend](https://dreamqin68.github.io/frontend-project/) to verify that the backend is working correctly.
+## Frontend Setup
+
+1. Download the repo: Go to https://github.com/dreamqin68/frontend-project and clone or download the repository
+
+2. Navigate to the downloaded folder
+
+   ```bash
+   cd frontend-project
+   ```
+
+3. Start the Frontend: Run the following command to start a local static server:
+
+   ```bash
+   npm start
+   ```
+
+   or
+
+   ```bash
+   npx serve -s . -l 3000
+   ```
+
+4. Open your browser and navigate to http://localhost:3000
 
 ## Features
 
@@ -78,11 +98,11 @@ backend-mongodb/
 
 This project includes a `.env` file, which contains the necessary environment variables:
 
-| Variable       | Description                                                  |
-| -------------- | ------------------------------------------------------------ |
-| `ORIGIN`       | Allowed frontend domain (e.g., https://dreamqin68.github.io) |
-| `DATABASE_URL` | MongoDB connection string (replace with actual credentials)  |
-| `PORT`         | The port number on which the server runs (8747)              |
+| Variable       | Description                                                 |
+| -------------- | ----------------------------------------------------------- |
+| `ORIGIN`       | Allowed frontend domain (e.g., http://localhost:3000)       |
+| `DATABASE_URL` | MongoDB connection string (replace with actual credentials) |
+| `PORT`         | The port number on which the server runs (8747)             |
 
 ## Using Mongoose
 

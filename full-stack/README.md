@@ -104,6 +104,8 @@ Below is a quick summary of how the React frontend was set up using Vite. For fu
    ✔ Project name: … client
    ✔ Select a framework: › React
    ✔ Select a variant: › JavaScript
+   ✔ Use rolldown-vite (Experimental)?: › No
+   ✔ Install with npm and start now?: › Yes
    ```
 
 2. **Install dependencies**:
@@ -114,7 +116,6 @@ Below is a quick summary of how the React frontend was set up using Vite. For fu
    ```
 
 3. **Install [shadcn](https://ui.shadcn.com/docs/installation/vite)** (optional UI library):
-
    - **Add Tailwind (version 3)**
 
      **Tailwind CSS** is a utility-first CSS framework that offers low-level utility classes, enabling you to quickly build custom designs without writing extensive custom CSS.
@@ -257,7 +258,6 @@ This setup shows how the React frontend sends signup data (`email` and `password
    ```
 
 2. **Signup Logic** (`client/src/pages/auth/index.jsx`):
-
    - Import **Axios** and create a client instance with `baseURL` set to server URL (e.g., `http://localhost:8747`).
    - Implement `handleSignup` to send a `POST` request with user-entered credentials (`email`, `password`) to the signup endpoint.
    - On a successful response (status `201`), inform the user of success; otherwise, show an error message.
@@ -288,7 +288,6 @@ This setup shows how the React frontend sends signup data (`email` and `password
    ```
 
 3. **React Router Configuration** (`client/src/App.jsx`)
-
    - Use **React Router** (`react-router-dom`) to navigate between different pages in your application.
    - Below, `/auth` points to the signup page (`Auth` component). Any unknown route (`*`) redirects to `/auth`.
    - This setup ensures that when users visit `/auth`, they see the signup form and can submit their credentials.
@@ -312,7 +311,6 @@ This setup shows how the React frontend sends signup data (`email` and `password
    ```
 
    **Explanation**:
-
    - `BrowserRouter` wraps the entire application and keeps the UI in sync with the URL.
    - `Routes` and `Route` define the available paths in the application.
    - `Navigate` helps redirect users if they try to access an undefined route.

@@ -1,4 +1,4 @@
-import Background from "../../assets/login3.webp";
+import Background from "../../assets/new26.png";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -26,7 +26,7 @@ const Auth = () => {
           email,
           password,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       // If the server responds with status 201, update the message state to show success

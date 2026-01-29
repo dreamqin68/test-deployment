@@ -81,7 +81,7 @@ const Auth = () => {
           </div>
         </div>
         <div className="hidden xl:flex justify-center items-center ">
-          <img src={Background} className="h-[500px] " />
+          <img src={Background} className="h-full w-full object-contain p-10" />
         </div>
       </div>
     </div>

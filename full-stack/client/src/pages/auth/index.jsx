@@ -26,7 +26,7 @@ const Auth = () => {
           email,
           password,
         },
-        { withCredentials: true },
+        { withCredentials: true }
       );
 
       // If the server responds with status 201, update the message state to show success
@@ -34,7 +34,9 @@ const Auth = () => {
         setMessage("Signup successful!");
       }
     } catch (error) {
-      setMessage("Signup failed. Please try again.");
+      const errorMessage =
+        error.response?.data?.message || "Signup failed. Please try again.";
+      setMessage(errorMessage);
       console.log(error);
     }
   };

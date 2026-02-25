@@ -32,10 +32,12 @@ describe("POST /api/auth/signup", () => {
 
   /**
    * We clear out all users between tests so each test starts with a fresh DB.
-   * This helps prevent one test's data from affecting another.
+   * Restore all mocks so any spy/mock from other files (e.g. authExtended.test.js)
+   * does not leak into this suite and break assertions (e.g. user not in DB).
    */
   afterEach(async () => {
     await User.deleteMany({});
+    jest.restoreAllMocks();
   });
 
   /**

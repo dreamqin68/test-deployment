@@ -13,9 +13,11 @@ describe("POST /api/auth/signup (Extended Error Coverage)", () => {
     await mongoose.disconnect();
   });
 
-  // Clear out any users between tests.
+  // Clear out any users between tests, and restore all mocks to avoid
+  // "mock pollution" affecting other test files (e.g. auth.test.js).
   afterEach(async () => {
     await User.deleteMany({});
+    jest.restoreAllMocks();
   });
 
   /**
@@ -37,8 +39,5 @@ describe("POST /api/auth/signup (Extended Error Coverage)", () => {
     // Expect a 500 status code and the error message.
     expect(res.status).toBe(500);
     expect(res.body.message).toBe("Internal Server Error");
-
-    // Restore the original save method to avoid affecting other tests.
-    User.prototype.save.mockRestore();
   });
 });

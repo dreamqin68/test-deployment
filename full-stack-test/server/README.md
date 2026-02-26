@@ -56,6 +56,11 @@ When you run tests, **@shelf/jest-mongodb** automatically sets up an ephemeral M
        @babel/core \
    ```
 
+   What these tools do:
+   - The API Caller (Supertest): Sends "fake" requests to your API routes to check responses.
+   - The Pop-up Database (@shelf/jest-mongodb): Starts a temporary database that clears itself after tests.
+   - The Translators (Babel): Ensures modern JavaScript code is readable by the test engine.
+
 ## Project Setup
 
 Here are the key files involved in testing:
@@ -72,7 +77,6 @@ Here are the key files involved in testing:
   Contains the `test` script, which runs Jest when you execute `npm test`.
 
 - `jest.config.cjs`
-
   - Tells Jest to use the **@shelf/jest-mongodb** preset for in-memory DB.
   - Uses `babel-jest` for ES module transformations (if needed).
 
@@ -103,7 +107,6 @@ The primary test is `auth.test.js` in `__tests__`. It uses:
 - `Supertest` calls `POST /api/auth/signup` with different payloads (valid, duplicate email, missing fields),
 - `Expect` statements verify status codes and JSON responses.
 - **Success Scenarios**
-
   - **Valid Credentials**: When the request body has a valid email and password,
     the endpoint should:
     1. Create a user in the (in-memory) database.
@@ -113,9 +116,7 @@ The primary test is `auth.test.js` in `__tests__`. It uses:
     the new user’s existence in the database via a Mongoose query.
 
 - **Failure Scenarios**
-
   1. **Duplicate Email**:
-
      - If the provided email is already registered, the endpoint should:
        - Respond with a `400` status code.
        - Return a message: `"Email already registered"`.
@@ -132,23 +133,18 @@ The primary test is `auth.test.js` in `__tests__`. It uses:
 ## How It Works
 
 1. **In-Memory MongoDB**
-
    - `@shelf/jest-mongodb` sets up process.env.MONGO_URL to point to an ephemeral database.
    - No real or local database is used, so tests won’t pollute real data.
 
 2. **Connecting**
-
    - `beforeAll` calls `connectDB(process.env.MONGO_URL)` to use the ephemeral DB.
 
 3. **Requesting**
-
    - With `Supertest` (`request(app)`), call Express routes in memory. No actual port needed.
 
 4. **Cleanup**
-
    - `afterEach` cleans up any created User documents, ensuring each test is independent.
    - `afterAll` disconnects from Mongoose to free resources.
 
 5. **Asserting Behavior:**
-
    - Check whether status codes, messages, and database entries match expectations (e.g., user creation, error responses).

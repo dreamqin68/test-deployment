@@ -48,6 +48,7 @@ Key Points:
    ```bash
    npm install --save-dev \
        jest \
+       jest-environment-jsdom \
        babel-jest \
        @babel/preset-env \
        @babel/preset-react \
@@ -56,6 +57,13 @@ Key Points:
        @testing-library/user-event \
        @testing-library/jest-dom
    ```
+
+   What these tools do:
+   - Virtual Browser (JSDOM): Simulates a browser environment in Node.
+   - Translators (Babel): Converts JSX and modern JS so Jest can read them.
+   - The "Eyes" (Testing Library): Finds elements like buttons and inputs on the screen.
+   - The "Hands" (User Event): Mimics real human typing and clicking.
+   - The "Language" (Jest-DOM): Adds intuitive checks like .toBeInTheDocument().
 
 ## Project Setup
 
@@ -130,7 +138,6 @@ The test targeting the **Auth** component (`client/src/pages/auth/index.jsx`). K
 ## How It Works
 
 1. **Mock Setup**
-
    - In `beforeEach`, we reset mocks (i.e., `jest.clearAllMocks()`) to ensure each test starts fresh.
    - For success tests, we do:
 
@@ -157,7 +164,6 @@ The test targeting the **Auth** component (`client/src/pages/auth/index.jsx`). K
 3. **Typing and Clicking:**
 
    Using `userEvent` to simulate user interactions.
-
    - Using `userEvent.type` to enter email/password,
    - then `userEvent.click` on the `Signup` button triggers the component’s `handleSignup` function.
 

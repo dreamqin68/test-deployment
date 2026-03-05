@@ -73,10 +73,16 @@ npm test
 
 This runs Jest with coverage and writes the report under a `coverage/` folder.
 
-- **Run a single test file** (e.g. only feature tests):
+- **Run a single test file**: use the correct extension for the project (client: `.jsx`, server: `.js`).
 
+  In **client/**:
   ```bash
   npm test -- __tests__/auth.test.jsx
+  ```
+
+  In **server/**:
+  ```bash
+  npm test -- __tests__/auth.test.js
   ```
 
 - **View the report**: Open `coverage/lcov-report/index.html` in a browser (or use a Live Server–style extension in the IDE). The terminal also prints a coverage summary.
@@ -105,7 +111,7 @@ Together, these tests cover statements, branches, and lines in the Auth page and
 
 The server uses **unit tests** and **feature tests** for the signup endpoint in `server/app.js`.
 
-- **Unit tests** (`server/__tests__/app.unit.test.js`): Mock mongoose and the `User` model. They call the `signup` handler and `connectDB` directly and assert on `res.status`/`res.json` and mock usage. They cover: validation (400), existing user (409), success (201), catch (500), and `connectDB(uri)` calling `mongoose.connect(uri)`. No real database.
+- **Unit tests** (`server/__tests__/auth.unit.test.js`): Mock mongoose and the `User` model. They call the `signup` handler and `connectDB` directly and assert on `res.status`/`res.json` and mock usage. They cover: validation (400), existing user (409), success (201), catch (500), and `connectDB(uri)` calling `mongoose.connect(uri)`. No real database.
 - **Feature tests** (`server/__tests__/auth.test.js`): Use Supertest to send `POST /api/auth/signup` and connect to an in-memory MongoDB. They cover: valid signup (201 + user in DB), duplicate email (409), missing email or password (400), and exception during signup (500). The 500 case is covered by mocking `User.prototype.save` to throw, which triggers the `catch` block in the signup controller.
 
 Together, unit and feature tests cover all branches and lines in the signup flow, including the `catch` block (lines 53–56 in `app.js`).Running `npm test` from `server/` with `--coverage` should show 100% statements, branches, functions, and lines for the covered files when all tests pass.

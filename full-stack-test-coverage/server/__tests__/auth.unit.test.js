@@ -20,7 +20,7 @@ jest.mock("mongoose", () => ({
 // Import after mock so app.js gets the mocked mongoose
 import { signup, connectDB } from "../app.js";
 
-describe("app (unit)", () => {
+describe("Auth (unit)", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSave.mockResolvedValue(undefined);

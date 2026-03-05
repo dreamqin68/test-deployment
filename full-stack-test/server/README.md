@@ -1,6 +1,6 @@
 # Testing Guide
 
-This document describes how to run and maintain tests for the **Auth** signup endpoint (`POST /api/auth/signup` in `app.js`). The project includes both **unit tests** (`app.unit.test.js`) and **feature tests** (`auth.test.js`). The same principles apply to testing other parts of your server.
+This document describes how to run and maintain tests for the **Auth** signup endpoint (`POST /api/auth/signup` in `app.js`). The project includes both **unit tests** (`auth.unit.test.js`) and **feature tests** (`auth.test.js`). The same principles apply to testing other parts of your server.
 
 ## Table of Contents
 
@@ -87,7 +87,7 @@ Jest will:
 
 Both test files target the signup logic in **app.js** (`signup` handler and `connectDB`).
 
-- **Unit tests** (`app.unit.test.js`) mock mongoose and User. They call the `signup` handler and `connectDB` directly and assert on `res.status`/`res.json` and mock usage. No real DB.
+- **Unit tests** (`auth.unit.test.js`) mock mongoose and User. They call the `signup` handler and `connectDB` directly and assert on `res.status`/`res.json` and mock usage. No real DB.
 
 - **Feature tests** (`auth.test.js`) use Supertest to send `POST /api/auth/signup` and connect to the in-memory MongoDB. They assert on HTTP status, body, and database state (e.g. user created).
 
@@ -97,7 +97,7 @@ Shared setup in feature tests: `beforeAll` connects to `process.env.MONGO_URL`, 
 
 The signup endpoint is covered by two test files with different purposes:
 
-### Unit tests: `__tests__/app.unit.test.js`
+### Unit tests: `__tests__/auth.unit.test.js`
 
 Unit tests focus on **one behavior or branch at a time** with **mocked mongoose/User**. No real database; the signup handler and connectDB are exercised in isolation.
 
@@ -113,7 +113,7 @@ Feature tests (integration) hit the **real route** with Supertest and use the **
 
 ### How they differ
 
-| Aspect | Unit (`app.unit.test.js`) | Feature (`auth.test.js`) |
+| Aspect | Unit (`auth.unit.test.js`) | Feature (`auth.test.js`) |
 |--------|----------------------------|---------------------------|
 | **Scope** | One branch or function per test (e.g. validation, existingUser, connectDB) | Full HTTP request and DB per test |
 | **DB** | Mocked (no MongoDB) | In-memory MongoDB |
@@ -126,7 +126,7 @@ Use **unit tests** to lock down handler and connectDB behavior; use **feature te
 
 The tables below list every test in each file and the corresponding code in `server/app.js`.
 
-### Unit tests (`app.unit.test.js`)
+### Unit tests (`auth.unit.test.js`)
 
 | Test | Corresponding code in app.js |
 |------|-------------------------------|

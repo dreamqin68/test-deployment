@@ -28,10 +28,13 @@ const Auth = () => {
       if (response.status === 201) {
         setMessage("Signup successful!");
       } else {
-        // Explicitly handle the false branch
-        setMessage("Signup did not succeed");
+        // Server responded but did not create account; show status so user knows why
+        setMessage(
+          `Signup failed. Please try again. (Status: ${response.status})`,
+        );
       }
     } catch (error) {
+      // Request threw: e.g. network error (no response) or client threw on error status (4xx/5xx). We show a generic message; error.response?.status could be used if you wanted to display it.
       setMessage("Signup failed. Please try again.");
       console.log(error);
     }

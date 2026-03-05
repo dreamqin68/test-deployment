@@ -17,7 +17,7 @@ app.use(
   cors({
     origin: ORIGIN,
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 
@@ -40,10 +40,10 @@ const signup = async (req, res) => {
         .json({ message: "Email and password are required" });
     }
 
-    // Check if the user already exists
+    // Check if the user already exists (conflict with current state → 409)
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "Email already registered" });
+      return res.status(409).json({ message: "Email already registered" });
     }
 
     // Create a new user
@@ -52,7 +52,7 @@ const signup = async (req, res) => {
 
     return res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
-    // console.error("Signup error:", error);
+    console.error("Signup error:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -72,7 +72,6 @@ export async function connectDB(uri) {
 }
 
 /**
- * Export the `app` so other files (like index.js or test files) can import it.
- * We also export the `User` model if tests need it.
+ * Export `app` and `signup` for index.js and tests. `User` and `connectDB` are exported above.
  */
-export { app };
+export { app, signup };

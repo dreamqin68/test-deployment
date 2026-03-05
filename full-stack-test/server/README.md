@@ -1,8 +1,6 @@
 # Testing Guide
 
-This document explains how to run and maintain the **Auth** endpoint test.
-The test, located at `server/__tests__/auth.test.js`, checks the **signup** flow at
-`POST /api/auth/signup` using an **ephemeral in-memory MongoDB** instance.
+This document describes how to run and maintain tests for the **Auth** signup endpoint (`POST /api/auth/signup` in `app.js`). The project includes both **unit tests** (`app.unit.test.js`) and **feature tests** (`auth.test.js`). The same principles apply to testing other parts of your server.
 
 ## Table of Contents
 
@@ -11,22 +9,19 @@ The test, located at `server/__tests__/auth.test.js`, checks the **signup** flow
 - [Project Setup](#project-setup)
 - [Usage](#usage)
 - [Test Structure](#test-structure)
+- [Unit vs Feature Testing](#unit-vs-feature-testing)
+- [Test coverage (app.js)](#test-coverage-appjs)
 - [How It Works](#how-it-works)
 
 ## Overview
 
-In this project, we use:
+The server uses:
 
 - **[Jest](https://jestjs.io/docs/getting-started)** as the test runner,
-- **Supertest** to simulate HTTP requests against our Express server,
-- **[@shelf/jest-mongodb](https://jestjs.io/docs/mongodb)** to spin up an in-memory MongoDB, avoiding real database interactions.
+- **Supertest** to simulate HTTP requests against the Express app,
+- **[@shelf/jest-mongodb](https://github.com/shelfio/jest-mongodb)** to provide an in-memory MongoDB for feature tests.
 
-The test ensures that:
-
-1. `POST /api/auth/signup` creates a new user with valid credentials.
-2. It returns appropriate errors for duplicate emails or missing fields.
-
-When you run tests, **@shelf/jest-mongodb** automatically sets up an ephemeral MongoDB instance so you can test database logic quickly and in isolation.
+Unit tests mock mongoose/User so no database is used; feature tests use the ephemeral MongoDB so the full signup flow (validation, DB, response) is exercised.
 
 ## Installation
 
@@ -44,7 +39,7 @@ When you run tests, **@shelf/jest-mongodb** automatically sets up an ephemeral M
 
 3. **(Optional) Manual Install**
 
-   If you’re setting up a similar test environment in your own project from scratch, install the following:
+   If you’re setting up a similar test environment from scratch:
 
    ```bash
    npm install --save-dev \
@@ -53,40 +48,30 @@ When you run tests, **@shelf/jest-mongodb** automatically sets up an ephemeral M
        supertest \
        babel-jest \
        @babel/preset-env \
-       @babel/core \
+       @babel/core
    ```
 
    What these tools do:
-   - The API Caller (Supertest): Sends "fake" requests to your API routes to check responses.
-   - The Pop-up Database (@shelf/jest-mongodb): Starts a temporary database that clears itself after tests.
-   - The Translators (Babel): Ensures modern JavaScript code is readable by the test engine.
+   - **Supertest**: Sends HTTP requests to your Express routes and checks responses.
+   - **@shelf/jest-mongodb**: Starts a temporary in-memory database for feature tests.
+   - **Babel**: Transforms ESM/modern JavaScript so Jest can run it.
 
 ## Project Setup
 
-Here are the key files involved in testing:
+Key files involved in testing:
 
-- `package.json`
+- **package.json**  
+  Contains the `test` script (`"test": "jest"`). Run `npm test` from `server/`.
 
-  ```bash
-  "scripts": {
-      "test": "jest",
-      ...
-  }
-  ```
+- **jest.config.cjs**  
+  Uses the **@shelf/jest-mongodb** preset (sets `process.env.MONGO_URL`) and **babel-jest** for ES modules.
 
-  Contains the `test` script, which runs Jest when you execute `npm test`.
-
-- `jest.config.cjs`
-  - Tells Jest to use the **@shelf/jest-mongodb** preset for in-memory DB.
-  - Uses `babel-jest` for ES module transformations (if needed).
-
-- `babel.config.cjs`
-
-  Provides Babel presets (`@babel/preset-env`) to Ensures ESM code or modern JavaScript is transformed properly in tests.
+- **babel.config.cjs**  
+  Provides Babel presets so ESM and modern JS are transformed correctly in tests.
 
 ## Usage
 
-To run test from the `server/` directory, execute:
+From the `server/` directory:
 
 ```bash
 npm test
@@ -94,57 +79,83 @@ npm test
 
 Jest will:
 
-1. Start an ephemeral MongoDB (via `@shelf/jest-mongodb`),
-2. Execute test files (like `auth.test.js`),
-3. Output pass/fail results and a summary of any failed assertions,
-4. Tear down the in-memory database when done.
+1. Start an ephemeral MongoDB when running feature tests (via the preset).
+2. Run all `*.test.js` files in `__tests__/`.
+3. Output pass/fail and a summary.
 
 ## Test Structure
 
-The primary test is `auth.test.js` in `__tests__`. It uses:
+Both test files target the signup logic in **app.js** (`signup` handler and `connectDB`).
 
-- `beforeAll` to connect Mongoose to `process.env.MONGO_URL` (set by` @shelf/jest-mongodb`),
-- `Supertest` calls `POST /api/auth/signup` with different payloads (valid, duplicate email, missing fields),
-- `Expect` statements verify status codes and JSON responses.
-- **Success Scenarios**
-  - **Valid Credentials**: When the request body has a valid email and password,
-    the endpoint should:
-    1. Create a user in the (in-memory) database.
-    2. Respond with a `201` status code.
-    3. Return a JSON message: `"User registered successfully"`.
-  - The test verifies these conditions by checking the HTTP response and then confirming
-    the new user’s existence in the database via a Mongoose query.
+- **Unit tests** (`app.unit.test.js`) mock mongoose and User. They call the `signup` handler and `connectDB` directly and assert on `res.status`/`res.json` and mock usage. No real DB.
 
-- **Failure Scenarios**
-  1. **Duplicate Email**:
-     - If the provided email is already registered, the endpoint should:
-       - Respond with a `400` status code.
-       - Return a message: `"Email already registered"`.
-     - The test creates a user first, then attempts to create another user
-       with the same email and expects `400`.
+- **Feature tests** (`auth.test.js`) use Supertest to send `POST /api/auth/signup` and connect to the in-memory MongoDB. They assert on HTTP status, body, and database state (e.g. user created).
 
-  2. **Missing Fields**:
-     - If the request is missing either `email` or `password`, the endpoint should:
-       - Respond with a `400` status code.
-       - Return an error message indicating the required fields are missing.
-     - The test sends one request missing `password`, and another missing `email`,
-       verifying each fails with `400`.
+Shared setup in feature tests: `beforeAll` connects to `process.env.MONGO_URL`, `afterEach` clears users and restores mocks, `afterAll` disconnects Mongoose.
+
+## Unit vs Feature Testing
+
+The signup endpoint is covered by two test files with different purposes:
+
+### Unit tests: `__tests__/app.unit.test.js`
+
+Unit tests focus on **one behavior or branch at a time** with **mocked mongoose/User**. No real database; the signup handler and connectDB are exercised in isolation.
+
+- **What they cover:** Validation (missing email/password → 400), existing user (→ 409), success (create user → 201), catch block (save throws → 500), and `connectDB(uri)` calling `mongoose.connect(uri)`.
+- **Why use them:** Fast, no DB; failures point to a specific branch or line in `app.js`.
+
+### Feature tests: `__tests__/auth.test.js`
+
+Feature tests (integration) hit the **real route** with Supertest and use the **in-memory MongoDB**. They test the full request → handler → DB → response flow.
+
+- **What they cover:** Valid signup (201 + user in DB), duplicate email (409), missing email or password (400), and exception during signup (500 via mocked `User.prototype.save`).
+- **Why use them:** Confidence that the API and database work together as a client would see them.
+
+### How they differ
+
+| Aspect | Unit (`app.unit.test.js`) | Feature (`auth.test.js`) |
+|--------|----------------------------|---------------------------|
+| **Scope** | One branch or function per test (e.g. validation, existingUser, connectDB) | Full HTTP request and DB per test |
+| **DB** | Mocked (no MongoDB) | In-memory MongoDB |
+| **Failure** | Points to a specific line/branch in `app.js` | Indicates the flow is broken somewhere |
+| **Count** | More, smaller tests | Fewer, broader tests |
+
+Use **unit tests** to lock down handler and connectDB behavior; use **feature tests** to lock down that the signup endpoint works end-to-end with a real DB.
+
+## Test coverage (app.js)
+
+The tables below list every test in each file and the corresponding code in `server/app.js`.
+
+### Unit tests (`app.unit.test.js`)
+
+| Test | Corresponding code in app.js |
+|------|-------------------------------|
+| returns 400 and 'Email and password are required' when email is missing | L36–40: validation branch when email or password missing → 400 |
+| returns 400 and 'Email and password are required' when password is missing | L36–40: same validation branch |
+| returns 409 and 'Email already registered' when user already exists | L43–46: `existingUser` branch → 409 |
+| returns 201 and 'User registered successfully' when valid and user does not exist | L49–52: create user, save, return 201 |
+| returns 500 and 'Internal Server Error' when save throws | L53–56: catch block → 500 |
+| calls mongoose.connect with the given uri | L69–71: `connectDB(uri)` → `mongoose.connect(uri)` |
+
+### Feature tests (`auth.test.js`)
+
+| Test | Corresponding code in app.js |
+|------|-------------------------------|
+| should create a user and return 201 if email/password are valid | L49–52: success path; also checks user in DB |
+| should return 409 if email is already registered | L43–46: existingUser branch |
+| should return 400 if email or password is missing | L36–40: validation branch |
+| should return 500 and 'Internal Server Error' if an exception occurs during signup | L53–56: catch block (triggered by mocking `User.prototype.save`) |
 
 ## How It Works
 
-1. **In-Memory MongoDB**
-   - `@shelf/jest-mongodb` sets up process.env.MONGO_URL to point to an ephemeral database.
-   - No real or local database is used, so tests won’t pollute real data.
+1. **Unit tests**
+   - `jest.mock("mongoose", ...)` replaces mongoose with a mock. `User` in app.js becomes a mock with `findOne` and instances with `save`. Tests call `signup(req, res)` or `connectDB(uri)` and assert on `res.status`/`res.json` and mock calls.
 
-2. **Connecting**
-   - `beforeAll` calls `connectDB(process.env.MONGO_URL)` to use the ephemeral DB.
+2. **Feature tests**
+   - **@shelf/jest-mongodb** sets `process.env.MONGO_URL` to an ephemeral MongoDB. `beforeAll` calls `connectDB(process.env.MONGO_URL)`.
+   - **Supertest** sends `request(app).post("/api/auth/signup").send({ ... })` so the real route and handler run against the in-memory DB.
+   - **Cleanup:** `afterEach` runs `User.deleteMany({})` and `jest.restoreAllMocks()`; `afterAll` disconnects Mongoose.
 
-3. **Requesting**
-   - With `Supertest` (`request(app)`), call Express routes in memory. No actual port needed.
-
-4. **Cleanup**
-   - `afterEach` cleans up any created User documents, ensuring each test is independent.
-   - `afterAll` disconnects from Mongoose to free resources.
-
-5. **Asserting Behavior:**
-   - Check whether status codes, messages, and database entries match expectations (e.g., user creation, error responses).
+3. **Assertions**
+   - Unit tests: `expect(res.status).toHaveBeenCalledWith(...)`, `expect(res.json).toHaveBeenCalledWith(...)`, and expectations on the User mock.
+   - Feature tests: `expect(res.status).toBe(...)`, `expect(res.body.message).toBe(...)`, and queries like `User.findOne(...)` to verify DB state.

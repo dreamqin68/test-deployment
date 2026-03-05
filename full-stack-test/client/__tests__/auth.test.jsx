@@ -49,8 +49,9 @@ describe("Auth Page", () => {
   });
 
   /**
-   * 1st test: If the API call resolves with a 201 status,
-   * we expect the UI to display "Signup successful!".
+   * Corresponds to index.jsx lines 15–29: handleSignup calls apiClient.post (lines 17–25);
+   * when response.status === 201 (lines 27–29), setMessage("Signup successful!") is called.
+   * Verifies the success message is shown in the UI (lines 71–73).
    */
   test('displays "Signup successful!" when signup returns status 201', async () => {
     /**
@@ -88,7 +89,7 @@ describe("Auth Page", () => {
      * Simulate a button click to trigger the Auth component's
      * handleSignup function, which calls `apiClient.post`.
      */
-    userEvent.click(signupButton);
+    await userEvent.click(signupButton);
 
     /**
      * `waitFor` is used to handle asynchronous changes in the DOM.
@@ -101,8 +102,36 @@ describe("Auth Page", () => {
   });
 
   /**
-   * 2nd test: If the API call rejects, we expect the UI to display
-   * "Signup failed. Please try again." as an error message.
+   * Corresponds to index.jsx else branch (non-201): when response.status !== 201,
+   * message includes "Signup failed. Please try again." and response.status. Verifies the UI (lines 71–73).
+   */
+  test('displays "Signup failed. Please try again." with status when signup returns a non-201 status', async () => {
+    const user = userEvent.setup();
+    apiClient.post.mockResolvedValue({ status: 200 });
+
+    render(<Auth />);
+    const emailInput = screen.getByPlaceholderText(/email/i);
+    const passwordInput = screen.getByPlaceholderText(/^password$/i);
+    const confirmPasswordInput =
+      screen.getByPlaceholderText(/confirm password/i);
+    const signupButton = screen.getByRole("button", { name: /signup/i });
+
+    await user.type(emailInput, "another@example.com");
+    await user.type(passwordInput, "pass123");
+    await user.type(confirmPasswordInput, "pass123");
+    await user.click(signupButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/signup failed\. please try again\. \(status: 200\)/i)
+      ).toBeInTheDocument();
+    });
+  });
+
+  /**
+   * Corresponds to index.jsx lines 31–33: in the catch block of handleSignup,
+   * setMessage("Signup failed. Please try again.") is called.
+   * Verifies the error message is shown in the UI (lines 71–73).
    */
   test("displays error message when signup fails", async () => {
     /**
@@ -134,7 +163,7 @@ describe("Auth Page", () => {
     await userEvent.type(passwordInput, "password123");
     await userEvent.type(confirmPasswordInput, "password123");
 
-    userEvent.click(signupButton);
+    await userEvent.click(signupButton);
 
     /**
      * We wait for the error message "Signup failed. Please try again."
@@ -142,7 +171,7 @@ describe("Auth Page", () => {
      */
     await waitFor(() => {
       expect(
-        screen.getByText(/signup failed\. please try again\./i)
+        screen.getByText(/signup failed\. please try again\./i),
       ).toBeInTheDocument();
     });
   });

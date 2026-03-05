@@ -1,35 +1,45 @@
 # Testing Coverage
 
-This document describes how to generate and interpret **coverage reports** for both the **client** and **server** sides of the application. Coverage reports help ensure that tests effectively exercise your code, revealing any untested lines or branches.
+This document describes how to generate and interpret **coverage reports** for both the **client** and **server**. It also explains how **unit tests** and **feature tests** work together to achieve full coverage.
 
 ## Table of Contents
 
 - [Overview](#overview)
+- [Unit vs Feature Testing](#unit-vs-feature-testing)
 - [Installation](#installation)
 - [Project Setup](#project-setup)
 - [Usage](#usage)
 - [Coverage Folder](#coverage-folder)
 - [Client Test Coverage](#client-test-coverage)
-- [Server Test Coverage](#sertver-test-coverage)
+- [Server Test Coverage](#server-test-coverage)
 
 ## Overview
 
-This project uses [Jest](https://jestjs.io/) for both **client** and **server** tests. Jest can produce detailed coverage reports by adding the `--coverage` flag to test commands.
+This project uses [Jest](https://jestjs.io/) for both **client** and **server** tests. Run tests with the `--coverage` flag to produce coverage reports.
 
-**Key Points:**
+**Coverage metrics:**
 
-- **Coverage Metrics**:
-  - **Statements**: % of statements in your code that are executed by tests.
-  - **Branches**: % of conditional paths (e.g., `if/else`, switch cases) covered by tests.
-  - **Functions**: % of declared functions called by tests.
-  - **Lines**: Similar to statements, but specifically tracks which lines in files were executed.
-- **Uncovered Line**: Lines that remain untested will be highlighted in the coverage report.
+- **Statements**: % of statements executed by tests.
+- **Branches**: % of conditional paths (e.g. `if/else`, ternary) covered.
+- **Functions**: % of declared functions called.
+- **Lines**: % of lines executed. Uncovered lines are listed in the report.
+
+## Unit vs Feature Testing
+
+Coverage is achieved by combining two kinds of tests:
+
+- **Unit tests**  
+  Exercise one behavior or branch at a time with **mocked dependencies** (e.g. mocked API, mocked mongoose). No real server or DB. They target specific lines/branches in the code and give fast, precise feedback.
+
+- **Feature tests**  
+  Exercise **full flows** (e.g. user fills form and submits, or HTTP request → handler → DB). They use real or in-memory resources (e.g. in-memory MongoDB, mocked API client) and verify that the feature works end-to-end.
+
+Together, unit tests cover branches and edge cases in isolation, and feature tests cover integration and user-facing behavior. Both contribute to the same coverage report.
 
 ## Installation
 
-1. **Clone** the repository or download the source code.
-2. **Navigate** to the project directory in your terminal.
-3. **Install** dependencies for both the client and server:
+1. **Clone** the repository and go to the project directory.
+2. **Install** dependencies for client and server:
 
    ```bash
    cd client
@@ -43,114 +53,59 @@ This project uses [Jest](https://jestjs.io/) for both **client** and **server** 
 
 ## Project Setup
 
-Both the **client** and **server** have a `package.json` containing scripts like:
+In both **client** and **server**, `package.json` typically has:
 
-```bash
+```json
 "scripts": {
-    "test": "jest --coverage",
-    ...
+  "test": "jest --coverage"
 }
 ```
 
-When you run `npm test`, Jest automatically includes coverage in the generated reports.
+Running `npm test` from `client/` or `server/` runs all tests and generates a coverage report.
 
 ## Usage
 
-To run tests from either the `client/` or `server/` directory, execute:
+From `client/` or `server/`:
 
 ```bash
 npm test
 ```
 
-This runs the Jest tests and produces a coverage report in a `coverage/` folder by default.
+This runs Jest with coverage and writes the report under a `coverage/` folder.
 
-- **Run One Specific Test**:
-  If you only want to run one test file (e.g., `auth.test.jsx`), do:
+- **Run a single test file** (e.g. only feature tests):
 
   ```bash
-  npm test  __tests__/auth.test.jsx
+  npm test -- __tests__/auth.test.jsx
   ```
 
-- **Open Coverage Report**:
-
-  After tests complete, open `coverage/lcov-report/index.html` in your browser to see a detailed HTML report.
-  The terminal output also shows a coverage summary.
+- **View the report**: Open `coverage/lcov-report/index.html` in a browser (or use a Live Server–style extension in the IDE). The terminal also prints a coverage summary.
 
 ## Coverage Folder
 
-Jest saves coverage data to a `coverage` folder in whichever directory you run the tests:
+Jest writes coverage under `coverage/` in the directory where you ran the tests:
 
-- `lcov-report/`: Contains HTML files with line-by-line and branch-by-branch details.
-- `coverage-final.json` or `lcov.info`: Machine-readable coverage data for external tools.
-- `clover.xml`: Another coverage format some CI systems can parse.
+- **lcov-report/**: HTML report with line and branch details.
+- **coverage-final.json** / **lcov.info**: Machine-readable data for CI or other tools.
+- **clover.xml**: Alternative format for some CI systems.
 
-**To view the coverage**:
-
-1. If using VSCode, install **Live Server** or a similar extension.
-2. Right-click `coverage/lcov-report/index.html` and choose `Open with Live Server`.
-3. Drill down into specific files to see which lines and branches are covered or uncovered.
+To inspect coverage: open `coverage/lcov-report/index.html` and navigate to the file you care about to see which lines and branches are covered or not.
 
 ## Client Test Coverage
 
-Initially, in `auth/index.jsx`(We can see it in `full-stack-test/client/src/pages/auth/index.jsx`), only the success path (`if (response.status === 201)`) had behavior. If `response.status` was anything else (like `200` or `400`), the code did nothing (no `else` block). As a result, the `false branch` was never actually covered by any test, which caused something like:
+The client uses **unit tests** and **feature tests** for the Auth page and UI components.
 
-```bash
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
-index.jsx |   100   |    75    |   100   |   100   | 28
-```
+- **Unit tests** (`client/__tests__/auth.unit.test.jsx`): Render the Auth page and test rendering, controlled inputs, and the signup handler in isolation (mocked `apiClient`). They cover validation, success (201), non-201 response, and catch (failed request) branches in `client/src/pages/auth/index.jsx`.
+- **Feature tests** (`client/__tests__/auth.test.jsx`): Simulate the full user flow (fill form, click Signup, check message) with a mocked API. They cover success, non-201, and request-failure scenarios end-to-end.
+- **Component unit tests** (e.g. `client/__tests__/button.unit.test.jsx`): Test UI components like `Button` in isolation (e.g. the `asChild` branch) so that branch coverage for shared components reaches 100%.
 
-We added an **explicit else branch** to cover non-201 responses in `client/src/pages/auth/index.jsx`:
-
-```bash
-if (response.status === 201) {
-  setMessage("Signup successful!");
-} else {
-  // Explicitly handle the false branch
-  setMessage("Signup did not succeed");
-}
-```
-
-We then introduced a new test `client/__tests__/authExtended.test.jsx`:
-
-1. Mocking Non-201 Response: We force `apiClient.post` to resolve with `{ status: 200 }`.
-2. False Branch Coverage: This triggers the `else` block `(setMessage("Signup did not succeed"))`.
-3. Assertion: We check for the text `"Signup did not succeed"` to confirm that the else block ran.
-
-**Result**:
-
-- **Statements, Funcs and Lines**: Already 100% from the `__tests__/auth.test.jsx`.
-- **Branch Coverage**: Increased to 100% by covering the new `else` path.
+Together, these tests cover statements, branches, and lines in the Auth page and related components. To reach 100% branch coverage, ensure every branch (e.g. success vs non-201 vs catch, and component branches like `asChild`) is exercised by at least one unit or feature test.
 
 ## Server Test Coverage
 
-The test file, `server/__tests__/auth.test.js`tested scenarios for:
+The server uses **unit tests** and **feature tests** for the signup endpoint in `server/app.js`.
 
-- Success (status 201)
-- Duplicate email (status 400)
-- Missing fields (status 400)
+- **Unit tests** (`server/__tests__/app.unit.test.js`): Mock mongoose and the `User` model. They call the `signup` handler and `connectDB` directly and assert on `res.status`/`res.json` and mock usage. They cover: validation (400), existing user (409), success (201), catch (500), and `connectDB(uri)` calling `mongoose.connect(uri)`. No real database.
+- **Feature tests** (`server/__tests__/auth.test.js`): Use Supertest to send `POST /api/auth/signup` and connect to an in-memory MongoDB. They cover: valid signup (201 + user in DB), duplicate email (409), missing email or password (400), and exception during signup (500). The 500 case is covered by mocking `User.prototype.save` to throw, which triggers the `catch` block in the signup controller.
 
-But the error-handling (`catch`) block in `server/app.js` never ran
-
-```bash
-catch (error) {
-    // console.error("Signup error:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
-  }
-```
-
-Causing coverage reports to show something like:
-
-```bash
-File    | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
-app.js  |   91.66 |   100    |   100   |   91.66 | 55-56
-```
-
-To fully exercise the catch block, we add `server/__tests__/authExtended.test.js`
-
-1. triggers the `catch` block in the signup controller.
-2. The test then confirms a `500` status and the message `"Internal Server Error"`
-
-**Result**:
-
-- **Branch and Funcs**: Already 100% from the `__tests__/auth.test.jsx`.
-- **Statements and Lines**: Increased to 100% by covering the `catch` block.
+Together, unit and feature tests cover all branches and lines in the signup flow, including the `catch` block (lines 53–56 in `app.js`).Running `npm test` from `server/` with `--coverage` should show 100% statements, branches, functions, and lines for the covered files when all tests pass.

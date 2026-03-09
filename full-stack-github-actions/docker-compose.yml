@@ -1,0 +1,28 @@
+services:
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  server:
+    build: ./server
+    ports:
+      - "8747:8747"
+    environment:
+      - PORT=8747
+      - DATABASE_URL=mongodb://mongodb:27017/full-stack
+      - ORIGIN=http://localhost
+    depends_on:
+      - mongodb
+
+  client:
+    build: ./client
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+
+volumes:
+  mongo-data:

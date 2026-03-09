@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "full-stack-github-actions/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "full-stack-github-actions/**"
+
+jobs:
+  server-unit-tests:
+    name: Server Unit Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: full-stack-github-actions/server
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: full-stack-github-actions/server/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run unit tests
+        run: npx jest --testPathPattern="unit"
+
+  server-feature-tests:
+    name: Server Feature Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: full-stack-github-actions/server
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: full-stack-github-actions/server/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run feature tests
+        run: npx jest --testPathPattern="auth.test.js$"
+
+  client-unit-tests:
+    name: Client Unit Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: full-stack-github-actions/client
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: full-stack-github-actions/client/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run unit tests
+        run: npx jest --testPathPattern="unit"
+
+  client-feature-tests:
+    name: Client Feature Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: full-stack-github-actions/client
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: full-stack-github-actions/client/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run feature tests
+        run: npx jest --testPathPattern="auth.test.jsx$"

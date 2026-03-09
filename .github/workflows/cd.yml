@@ -1,0 +1,59 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install client dependencies
+        run: npm install
+        working-directory: full-stack-github-actions/client
+
+      - name: Build client
+        run: npm run build
+        working-directory: full-stack-github-actions/client
+
+      - name: Upload client build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-dist
+          path: full-stack-github-actions/client/dist
+
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: build
+    # ─── Continuous Delivery vs. Continuous Deployment ───
+    #
+    # Continuous Delivery (manual approval before deploy):
+    #   Uncomment the line below. Then create a "production" environment
+    #   in GitHub Settings → Environments with "Required reviewers" enabled.
+    #
+    # environment: production
+    #
+    # Continuous Deployment (fully automatic deploy):
+    #   Keep the line above commented out. The deploy runs automatically
+    #   as soon as CI passes and the build succeeds.
+    # ────────────────────────────────────────────────────
+
+    steps:
+      - name: Deploy server
+        run: echo "Deploying server to production..."
+
+      - name: Deploy client
+        run: echo "Deploying client to production..."

@@ -12,9 +12,10 @@ A collection of minimal projects for testing frontend, backend, and full-stack s
   - [backend-mongoDB](#backend-mongodb)
   - [full-stack](#full-stack)
   - [minimal-socket](#minimal-socket)
+  - [minimal-JWT](#minimal-jwt)
   - [full-stack-test](#full-stack-test)
   - [full-stack-test-coverage](#full-stack-test-coverage)
-  - [minimal-JWT](#minimal-jwt)
+  - [full-stack-github-actions](#full-stack-github-actions)
 - [Testing: full-stack-test & full-stack-test-coverage](#testing-full-stack-test--full-stack-test-coverage)
 - [Getting Started](#getting-started)
 
@@ -32,6 +33,7 @@ This repository contains several projects, each focused on a specific scenario:
 | **minimal-JWT** | JWT auth: signup, cookies, protected userinfo |
 | **full-stack-test** | Same as full-stack plus **unit and feature tests** (no coverage report) |
 | **full-stack-test-coverage** | Same as full-stack-test with **coverage** enabled (`jest --coverage`) |
+| **full-stack-github-actions** | CI/CD + IaC + Insights demo: GitHub Actions (CI, CD, Coverage), Docker (IaC), and analytics |
 
 You can run any project on its own. For details and scripts, see each folder’s README.
 
@@ -45,8 +47,9 @@ test-deployment/
 ├── full-stack           # MERN: client + server + MongoDB signup
 ├── minimal-socket       # Socket.io chat (client + server)
 ├── minimal-JWT          # JWT auth with cookies (client + server)
-├── full-stack-test      # full-stack + unit & feature tests
-└── full-stack-test-coverage   # full-stack-test + coverage reports
+├── full-stack-test           # full-stack + unit & feature tests
+├── full-stack-test-coverage  # full-stack-test + coverage reports
+└── full-stack-github-actions # CI/CD, IaC, GitHub Insights demo
 ```
 
 ## Subfolder Descriptions
@@ -81,6 +84,12 @@ test-deployment/
 - **Tech**: Node.js, Express, Socket.io (server and client).
 - **Usage**: Install and run both `server/` and `client/`; open the client in the browser to chat.
 
+### minimal-JWT
+
+- **Purpose**: Simple JWT-based auth: signup, HTTP-only cookies, and a protected userinfo endpoint.
+- **Tech**: Node.js, Express, bcrypt, jsonwebtoken, Axios (client).
+- **Usage**: Install and run both `client/` and `server/`; see `minimal-JWT/README.md` for endpoints and flow.
+
 ### full-stack-test
 
 - **Purpose**: Same stack as **full-stack**, with **unit and feature tests** for the Auth signup flow (client and server). No coverage flag by default.
@@ -96,11 +105,16 @@ test-deployment/
 - **Tech**: Same as full-stack-test; client may add e.g. `button.unit.test.jsx` for UI component branches.
 - **Usage**: From `client/` or `server/`, run `npm test` (script includes `--coverage`). Open `coverage/lcov-report/index.html` for the report. See root `full-stack-test-coverage/README.md` for metrics and unit vs feature testing.
 
-### minimal-JWT
+### full-stack-github-actions
 
-- **Purpose**: Simple JWT-based auth: signup, HTTP-only cookies, and a protected userinfo endpoint.
-- **Tech**: Node.js, Express, bcrypt, jsonwebtoken, Axios (client).
-- **Usage**: Install and run both `client/` and `server/`; see `minimal-JWT/README.md` for endpoints and flow.
+- **Purpose**: DevOps demo for **CI**, **CD**, **Infrastructure as Code (IaC)**, and **GitHub Insights & Analytics**. Same full-stack signup app as full-stack-test, with GitHub Actions workflows and Docker added.
+- **Tech**: React (Vite), Express, MongoDB, Jest; GitHub Actions (`.github/workflows/ci.yml`, `cd.yml`, `coverage.yml`); Docker (Dockerfile per app, `docker-compose.yml`).
+- **Highlights**:
+  - **CI**: Unit and feature tests on push/PR; npm cache for fast builds; paths filter so only changes under `full-stack-github-actions/` trigger runs.
+  - **CD**: Build → Deploy pipeline after CI passes; switch between Continuous Deployment (auto) and Continuous Delivery (manual approval via GitHub Environment).
+  - **IaC**: Dockerfiles and docker-compose define client, server, and MongoDB; one-command run with `docker compose up --build`.
+  - **Insights**: Coverage workflow posts a coverage table as a PR comment; README documents status badges and built-in GitHub Insights (Pulse, Contributors, Actions, etc.).
+- **Usage**: Run tests locally from `client/` and `server/` with `npm test`. Run the full stack with Docker: from repo root, `cd full-stack-github-actions && docker compose up --build`, then open `http://localhost`. Workflows run automatically on push/PR when under `full-stack-github-actions/`. See **full-stack-github-actions/README.md** for full CI/CD, IaC, and Insights docs.
 
 ## Testing: full-stack-test & full-stack-test-coverage
 

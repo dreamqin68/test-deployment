@@ -28,6 +28,7 @@ This project demonstrates **Continuous Integration (CI)**, **Continuous Delivery
   - [Without IaC vs. With IaC](#without-iac-vs-with-iac)
 - [GitHub Insights & Analytics](#github-insights--analytics)
   - [Coverage Workflow](#coverage-workflow)
+  - [Where to See Coverage](#where-to-see-coverage)
   - [PR Coverage Comment](#pr-coverage-comment)
   - [Status Badges](#status-badges)
   - [Built-in GitHub Insights](#built-in-github-insights)
@@ -528,9 +529,20 @@ PR opened / updated
 2. **Client Coverage** — runs `jest --coverage` on the client, uploads `coverage-summary.json`
 3. **Coverage Report** — downloads both summaries, generates a markdown table, and posts it as a **PR comment**
 
+### Where to See Coverage
+
+- **After `git push` (to main)**  
+  The Coverage workflow runs automatically. Go to the repo **Actions** tab → select the **Coverage** workflow → open the latest run. The **Server Coverage** and **Client Coverage** jobs show the coverage numbers in their logs (e.g. `% Stmts`, `% Branch`, `% Funcs`, `% Lines`). The "Post Coverage Report" job is skipped on push (it only runs for PRs).
+
+- **On a Pull Request**  
+  The same workflow runs, and when it finishes it **posts a comment** on that PR with a coverage table (see below). That comment is the only place in the GitHub UI where coverage is shown in a compact table.
+
+- **GitHub Insights**  
+  There is **no** built-in "Coverage" or "Code coverage" page under Insights. Coverage is visible only in the **Actions** run logs and (for PRs) in the **PR comment** from this workflow. To have a dedicated coverage dashboard, you would integrate a service like Codecov or Coveralls.
+
 ### PR Coverage Comment
 
-When the workflow finishes, it automatically posts (or updates) a comment on the PR like this:
+When the workflow runs on a **pull request**, it automatically posts (or updates) a comment on the PR like this:
 
 > **📊 Test Coverage Report**
 >

@@ -221,7 +221,8 @@ CI passes on main
         │
         ▼
   ┌───────────┐
-  │   Build    │  Build client (npm run build), upload artifact
+  │   Build    │  Server: npm ci --omit=dev, upload artifact
+  │            │  Client: npm run build (Vite), upload dist/
   └─────┬─────┘
         │
         ▼
@@ -238,14 +239,23 @@ build:
   steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
+    # Server (Node/Express: no compile, just prod deps + package)
+    - run: npm ci --omit=dev
+      working-directory: full-stack-github-actions/server
+    - uses: actions/upload-artifact@v4
+      with: { name: server-bundle, path: full-stack-github-actions/server }
+    # Client (Vite: build to static assets)
     - run: npm install
-    - run: npm run build # Vite builds client into dist/
-    - uses: actions/upload-artifact@v4 # Save build output for later stages
+      working-directory: full-stack-github-actions/client
+    - run: npm run build
+      working-directory: full-stack-github-actions/client
+    - uses: actions/upload-artifact@v4
+      with: { name: client-dist, path: full-stack-github-actions/client/dist }
 ```
 
-- Only runs if CI succeeded
-- Builds the React client with Vite (`npm run build` → `dist/`)
-- Uploads the build artifact so downstream jobs can access it
+- Only runs if CI succeeded.
+- **Server**: `npm ci --omit=dev` installs production dependencies (no test deps); the whole server directory is uploaded as `server-bundle` for the deploy job (e.g. to run on a Node host or feed into a Docker build).
+- **Client**: Vite builds the React app into `dist/`; that folder is uploaded as `client-dist` for deployment (e.g. to nginx, S3, or a static host).
 
 ### Stage 2: Deploy
 
